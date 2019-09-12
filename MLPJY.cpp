@@ -51,22 +51,23 @@ MLP::MLP(
 	log_weights = fopen("log_weights.txt", "w");
 	log_errors = fopen("log_errors.txt", "w");
 }
-void MLP::train(const double ** inputs, const double ** expected_outputs, int dataset_amount)
+void MLP::train(double ** inputs, double ** expected_outputs, int dataset_amount)
 {
 	double error = 0.0;
-	for (int j = 0; j < 2000; j++)
+	for (int j = 0; j < 300; j++)
 	{
 		for (int i = 0; i < dataset_amount; i++)
 		{
-			singleRun(inputs[i]);
-			error = getError(expected_outputs[i]);
-			calculateSigmas(expected_outputs[i]);
-			lastWeightsCorrection();
-			backRun();
-			changeWeights2AndWeights();
-			saveWeights();
-
-			fprintf(log_errors, "%.5lf\t", error);
+			for (int k = 0; k < 1; k++) {
+				singleRun(inputs[i]);
+				error = getError(expected_outputs[i]);
+				calculateSigmas(expected_outputs[i]);
+				lastWeightsCorrection();
+				backRun();
+				changeWeights2AndWeights();
+				//saveWeights();
+			}
+			//fprintf(log_errors, "%.5lf\t", error);
 		}
 		fprintf(log_errors, "\n");
 	}

@@ -5,12 +5,12 @@
 #include "RNNJY.h"
 
 
-MLP * loadMLP(char * filename)
-{
-	FILE * fp = fopen(filename, "r");
-	if (!fp)return NULL;
-	
-
-
-
-}
+//MLP * loadMLP(char * filename)
+//{
+//	FILE * fp = fopen(filename, "r");
+//	if (!fp)return NULL;
+//	
+//
+//
+//
+//}

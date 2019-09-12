@@ -15,7 +15,7 @@ RNN::RNN(
 )
 {
 	time = 0;
-	study_rate = 0.1;
+	study_rate = 0.01;
 	sequence_max_length = sequence_limitation;
 	input_neural_amount = input;
 	output_neural_amount = output;
@@ -70,14 +70,14 @@ RNN::RNN(
 	log_errors = fopen("log_errors.txt", "w");
 }
 void RNN::train(
-	const double *** inputs,
-	const int * sequence_length,
-	const double *** expected_outputs,
+	double *** inputs,
+	int * sequence_length,
+	double *** expected_outputs,
 	int dataset_amount
 )
 {
 	double error = 0.0;
-	for (int j = 0; j < 10000; j++)
+	for (int j = 0; j < 2000; j++)
 	{
 		for (int i = 0; i < dataset_amount; i++)
 		{

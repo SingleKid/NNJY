@@ -35,7 +35,7 @@ struct MLP {
 		const double * biases = NULL,
 		const double *** table = NULL
 	);
-	void train(const double ** inputs, const double ** expected_outputs, int dataset_amount);
+	void train(double ** inputs, double ** expected_outputs, int dataset_amount);
 	~MLP();
 	double getError(const double * targets)
 	{

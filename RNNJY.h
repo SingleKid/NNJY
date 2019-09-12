@@ -43,9 +43,9 @@ struct RNN {
 		const double *** table = NULL
 	);
 	void train(
-		const double *** inputs,
-		const int * sequence_length,
-		const double *** expected_outputs,
+		double *** inputs,
+		int * sequence_length,
+		double *** expected_outputs,
 		int dataset_amount
 	);
 	~RNN();
@@ -58,12 +58,13 @@ struct RNN {
 		}
 		return tot;
 	}
-	void work(const double ** input, int sequence_length, double * out)
+	void work(double ** input, int sequence_length, double ** out)
 	{
 		for (time = 0; time < sequence_length; time++)
 		{
 			singleRun(input[time]);
-			out[time] = output_layers[time]->value2[0];
+			for (int i = 0; i < output_neural_amount; i++)
+				out[time][i] = output_layers[time]->value2[i];
 		}
 	}
 private:

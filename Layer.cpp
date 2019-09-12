@@ -6,7 +6,7 @@
 #include "Layer.h"
 void malloc_weights_for(int front, int back, double **& out, const double ** table)
 {
-	if (!table) srand(time(0));
+	if (!table) srand((unsigned int)time(0));
 	out = new double*[front];
 	for (int i = 0; i < front; i++)
 	{
