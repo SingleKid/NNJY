@@ -13,7 +13,8 @@ void malloc_weights_for(int front, int back, double **& out, const double ** tab
 		out[i] = new double[back];
 		for (int j = 0; j < back; j++)
 		{
-			if (!table)out[i][j] = ((double)(2.0 * rand()) / ((double)RAND_MAX + 1.0) - 1.0); // make the random value with range[-0.5,0.5] and step 0.01
+			//if (!table)out[i][j] = ((double)(2.0 * rand()) / ((double)RAND_MAX + 1.0) - 1.0); // make the random value with range[-0.5,0.5] and step 0.01
+			if (!table)out[i][j] = 0.0;
 			else out[i][j] = table[i][j];
 		}
 	}

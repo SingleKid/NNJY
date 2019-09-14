@@ -15,7 +15,7 @@ RNN::RNN(
 )
 {
 	time = 0;
-	study_rate = 0.01;
+	study_rate = 0.1;
 	sequence_max_length = sequence_limitation;
 	input_neural_amount = input;
 	output_neural_amount = output;
@@ -76,24 +76,38 @@ void RNN::train(
 	int dataset_amount
 )
 {
-	double error = 0.0;
-	for (int j = 0; j < 2000; j++)
+	double * errors = (double*)malloc(sizeof(int) * dataset_amount);
+	memset(errors, 0, sizeof(double) * dataset_amount);
+	int percent = 0;
+	printf("%02d percent...\n", percent);
+
+	int train_iter = 100000;
+	for (int j = 0; j < train_iter; j++)
 	{
+		if (floor(j * 100.0 / train_iter) > percent) {
+			percent = j * 100.0 / train_iter;
+			printf("%02d percent...errors: ", percent);
+			for (int i = 0; i < dataset_amount; i++) {
+				printf("\t%d-- %lf", i + 1, errors[i]);
+			}
+			printf("\n");
+		}
+
 		for (int i = 0; i < dataset_amount; i++)
 		{
+			errors[i] = 0;
 			for (time = 0; time < sequence_length[i]; time++)
 			{
 				singleRun(inputs[i][time]);
-				error += getError(expected_outputs[i][time]);
+				errors[i] += getError(expected_outputs[i][time]);
 			}
 			for (time = sequence_length[i] - 1; time >= 0; time--)
 			{
 				calculateSigmas(expected_outputs[i][time]);
 				lastWeightsCorrection();
 				backRun(time == sequence_length[i] - 1);
+				changeWeights2AndWeights();
 			}
-
-			error = 0;
 		}
 	}
 }
@@ -190,7 +204,7 @@ void RNN::backRun(bool is_last)
 		for (int j = 0; j < lastHidden()->neural_amount; j++)
 			for (int k = 0; k < lastHidden()->neural_amount; k++)
 			{
-				tweights[hidden_layer_amount - 1][j][k] =
+				tweights2[hidden_layer_amount - 1][j][k] =
 					tweights[hidden_layer_amount - 1][j][k] +
 					study_rate * lastHidden()->value2[j] * hidden_layers[time + 1][hidden_layer_amount - 1].value2[k];
 			}
@@ -210,12 +224,12 @@ void RNN::backRun(bool is_last)
 		{
 			for (int k = 0; k < hidden_neural_amount[i]; k++)
 			{
-				weights[i + 1][k][j] =
+				weights2[i + 1][k][j] =
 					weights[i + 1][k][j] + study_rate * hidden_layers[time][i + 1].value2[j] * hidden_layers[time][i].value2[k];
 			}
 			if (!is_last) for (int k = 0; k < hidden_neural_amount[i + 1]; k++)
 			{
-				tweights[i][j][k] =
+				tweights2[i][j][k] =
 					tweights[i][j][k] + study_rate * hidden_layers[time][i].value2[j] * hidden_layers[time + 1][i].value2[k];
 			}
 		}
@@ -223,7 +237,7 @@ void RNN::backRun(bool is_last)
 			hidden_layers[time] + i + 1,
 			hidden_layers[time] + i,
 			weights[i + 1],
-			is_last ? NULL : hidden_layers[time + 1] + i + 1,
+			is_last ? NULL : hidden_layers[time + 1] + i,
 			is_last ? NULL : tweights[i],
 			0,
 			true
